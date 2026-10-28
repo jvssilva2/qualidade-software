@@ -4,16 +4,21 @@ export function isPasswordValid(password: string): boolean {
   }
 
   const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
   const hasNumber = /[0-9]/.test(password);
   const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
 
-  return hasUpperCase && hasNumber && hasSpecialChar;
+  return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 }
+
 export function getPasswordValidationMessage(password: string): string {
+  if (!password || password.trim() === '') {
+    return 'Senha é obrigatória';
+  }
+
   const errors: string[] = [];
 
-  // CORREÇÃO: adicionar erro se tiver MENOS de 8 caracteres
-  if (!password || password.length < 8) {
+  if (password.length < 8) {
     errors.push('mínimo de 8 caracteres');
   }
 
