@@ -203,5 +203,5 @@ const config: Config = {
   // Whether to use watchman for file crawling
   // watchman: true,
 };
-
+// @ts-ignore
 export default createJestConfig(config);
