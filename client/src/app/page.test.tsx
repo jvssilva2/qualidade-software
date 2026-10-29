@@ -35,12 +35,14 @@ describe('Página Principal (Feed - Integração)', () => {
       title: 'Primeiro Post do Feed',
       body: 'Conteúdo de teste do primeiro post.',
       liked: false,
+      reactions: { likes: 192, dislikes: 25 },
     },
     {
       id: 2,
       title: 'Segundo Post do Feed',
       body: 'Conteúdo de teste do segundo post.',
       liked: true,
+      reactions: { likes: 859, dislikes: 32 },
     },
   ];
 
@@ -85,5 +87,24 @@ describe('Página Principal (Feed - Integração)', () => {
     );
 
     alertMock.mockRestore();
+  });
+
+  it('deve exibir likes e dislikes de cada post no feed', async () => {
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: false,
+      user: null,
+      isLoading: false,
+    });
+
+    render(<Home />);
+
+    const likes = await screen.findAllByTestId('post-likes');
+    const dislikes = screen.getAllByTestId('post-dislikes');
+
+    expect(likes).toHaveLength(2);
+    expect(likes[0]).toHaveTextContent('192 likes');
+    expect(dislikes[0]).toHaveTextContent('25 dislikes');
+    expect(likes[1]).toHaveTextContent('859 likes');
+    expect(dislikes[1]).toHaveTextContent('32 dislikes');
   });
 });

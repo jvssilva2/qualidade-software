@@ -17,9 +17,10 @@ public class PostService {
   private final RestTemplate restTemplate;
   private final ObjectMapper objectMapper;
 
-  public PostService(UserPostReactionRepository reactionRepository) {
+  // RestTemplate injetado (bean em AppConfig) para permitir mock nos testes
+  public PostService(UserPostReactionRepository reactionRepository, RestTemplate restTemplate) {
     this.reactionRepository = reactionRepository;
-    this.restTemplate = new RestTemplate();
+    this.restTemplate = restTemplate;
     this.objectMapper = new ObjectMapper();
   }
 
@@ -149,18 +150,16 @@ public class PostService {
     return result;
   }
 
-  private Map<String, Object> extractReactions(JsonNode postNode) {
-    Map<String, Object> reactions = new HashMap<>();
-    JsonNode reactionsNode = postNode.get("reactions");
+  /**
+   * Extrai o objeto "reactions" da DummyJSON: { "likes": n, "dislikes": n }.
+   * Se o campo não existir, retorna 0 para ambos.
+   */
+  Map<String, Integer> extractReactions(JsonNode postNode) {
+    JsonNode reactionsNode = postNode.path("reactions");
 
-    if (reactionsNode != null && reactionsNode.isObject()) {
-      reactions.put("likes", reactionsNode.path("likes").asInt(0));
-      reactions.put("dislikes", reactionsNode.path("dislikes").asInt(0));
-    } else {
-      reactions.put("likes", 0);
-      reactions.put("dislikes", 0);
-    }
-
+    Map<String, Integer> reactions = new HashMap<>();
+    reactions.put("likes", reactionsNode.path("likes").asInt(0));
+    reactions.put("dislikes", reactionsNode.path("dislikes").asInt(0));
     return reactions;
   }
 

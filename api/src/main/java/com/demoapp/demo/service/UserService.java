@@ -15,7 +15,8 @@ public class UserService {
   }
 
   public boolean isEmailValid(String email) {
-    return email != null && email.contains("@");
+    // Exige texto antes do @, domínio e extensão (ex: user@dominio.com)
+    return email != null && Pattern.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", email);
   }
 
   public boolean isPasswordValid(String password) {

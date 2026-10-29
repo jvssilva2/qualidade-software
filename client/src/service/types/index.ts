@@ -22,6 +22,7 @@ export interface ResetPasswordRequest {
   email: string;
 }
 
+// Reações no formato da DummyJSON: { reactions: { likes, dislikes } }
 export interface Reactions {
   likes: number;
   dislikes: number;

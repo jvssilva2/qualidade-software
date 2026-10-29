@@ -25,6 +25,16 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "off",
     },
   },
+  {
+    // Arquivos de teste: mocks usam any e componentes anônimos
+    files: ["**/*.test.ts", "**/*.test.tsx", "jest.config.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "react/display-name": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
