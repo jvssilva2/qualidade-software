@@ -17,9 +17,10 @@ public class PostService {
   private final RestTemplate restTemplate;
   private final ObjectMapper objectMapper;
 
-  public PostService(UserPostReactionRepository reactionRepository) {
+  // RestTemplate injetado (bean em AppConfig) para permitir mock nos testes
+  public PostService(UserPostReactionRepository reactionRepository, RestTemplate restTemplate) {
     this.reactionRepository = reactionRepository;
-    this.restTemplate = new RestTemplate();
+    this.restTemplate = restTemplate;
     this.objectMapper = new ObjectMapper();
   }
 
@@ -61,6 +62,7 @@ public class PostService {
         post.put("title", postNode.get("title").asText());
         post.put("body", postNode.get("body").asText());
         post.put("liked", likedPostIds.contains(postId));
+        post.put("reactions", extractReactions(postNode));
         
         posts.add(post);
       }
@@ -108,6 +110,7 @@ public class PostService {
         post.put("title", postNode.get("title").asText());
         post.put("body", postNode.get("body").asText());
         post.put("liked", true);
+        post.put("reactions", extractReactions(postNode));
         
         posts.add(post);
       }
@@ -145,6 +148,19 @@ public class PostService {
     result.put("liked", liked);
     
     return result;
+  }
+
+  /**
+   * Extrai o objeto "reactions" da DummyJSON: { "likes": n, "dislikes": n }.
+   * Se o campo não existir, retorna 0 para ambos.
+   */
+  Map<String, Integer> extractReactions(JsonNode postNode) {
+    JsonNode reactionsNode = postNode.path("reactions");
+
+    Map<String, Integer> reactions = new HashMap<>();
+    reactions.put("likes", reactionsNode.path("likes").asInt(0));
+    reactions.put("dislikes", reactionsNode.path("dislikes").asInt(0));
+    return reactions;
   }
 
 }

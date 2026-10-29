@@ -17,6 +17,10 @@ export default function PostCard({
   const [liked, setLiked] = useState(post.liked);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Reações vindas da DummyJSON (fallback 0 caso a API não envie)
+  const likes = post.reactions?.likes ?? 0;
+  const dislikes = post.reactions?.dislikes ?? 0;
+
   async function handleLike() {
     if (!isAuthenticated) {
       alert("Você precisa estar autenticado para curtir posts!");
@@ -80,11 +84,26 @@ export default function PostCard({
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "wrap",
+          gap: "0.5rem",
           marginTop: "1rem",
         }}
       >
+        <div
+          data-testid="post-reactions"
+          style={{
+            display: "flex",
+            gap: "1rem",
+            color: "var(--foreground)",
+            opacity: 0.85,
+          }}
+        >
+          <span data-testid="post-likes">👍 {likes} likes</span>
+          <span data-testid="post-dislikes">👎 {dislikes} dislikes</span>
+        </div>
+
         <button
           onClick={handleLike}
           disabled={isLoading}
